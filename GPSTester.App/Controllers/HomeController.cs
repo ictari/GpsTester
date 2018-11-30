@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using GPSTester.App.Models;
 
@@ -10,6 +6,8 @@ namespace GPSTester.App.Controllers
 {
     public class HomeController : Controller
     {
+        public Location Location { get; set; }
+
         public IActionResult Index()
         {
             return View();
@@ -38,6 +36,19 @@ namespace GPSTester.App.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpPost]
+        public ActionResult Move(LocationModel model, string submitButton)
+        {
+            if (ModelState.IsValid)
+            {
+                Location = new Location();
+                model.Direction = submitButton;
+                Location.Update(model);
+            }
+
+            return View("Index", model);
         }
     }
 }
